@@ -22,7 +22,7 @@ class MakeModelWithPatternCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $withPattern = $this->hasOption('with-pattern') && $this->option('with-pattern');
+        $withPattern = $this->hasOption('with-pattern');//&& $this->option('with-pattern');
         $force = $this->option('force');
 
         // Debug: Afficher la valeur de l'option

@@ -1,7 +1,7 @@
 # Laravel Repository Pattern Generator
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/votre-nom/laravel-repository-pattern.svg?style=flat-square)](https://packagist.org/packages/votre-nom/laravel-repository-pattern)
-[![Total Downloads](https://img.shields.io/packagist/dt/votre-nom/laravel-repository-pattern.svg?style=flat-square)](https://packagist.org/packages/votre-nom/laravel-repository-pattern)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/jdikasa/laravel-repository-pattern.svg?style=flat-square)](https://packagist.org/packages/jdikasa/laravel-repository-pattern)
+[![Total Downloads](https://img.shields.io/packagist/dt/jdikasa/laravel-repository-pattern.svg?style=flat-square)](https://packagist.org/packages/jdikasa/laravel-repository-pattern)
 [![Laravel 12.x](https://img.shields.io/badge/Laravel-12.x-red.svg?style=flat-square)](https://laravel.com)
 [![PHP 8.2+](https://img.shields.io/badge/PHP-8.2+-blue.svg?style=flat-square)](https://php.net)
 

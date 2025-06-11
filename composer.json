@@ -1,0 +1,43 @@
+{
+  "name": "jdikasa/laravel-repository-pattern",
+  "description": "Laravel package for generating Repository pattern components",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jean-Louis DiKasa",
+      "email": "jdikasa@yahoo.com"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "illuminate/support": "^10.0|^11.0|^12.0",
+    "illuminate/console": "^10.0|^11.0|^12.0",
+    "illuminate/filesystem": "^10.0|^11.0|^12.0",
+    "nesbot/carbon": "^3.0",
+    "spatie/laravel-fractal": "^6.3"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^8.0|^9.0|^10.0",
+    "phpunit/phpunit": "^10.0|^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jdikasa\\LaravelRepositoryPattern\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Jdikasa\\LaravelRepositoryPattern\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Jdikasa\\LaravelRepositoryPattern\\RepositoryPatternServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

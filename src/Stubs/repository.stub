@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\{{ModelName}};
+use Illuminate\Database\Eloquent\Collection;
+
+class {{ModelName}}Repository
+{
+
+    public function all(array $filters): Collection
+    {
+        $query = {{ModelName}}::query();
+
+        if (!empty($filters['id'])) {
+            $query->where('id', $filters['id']);
+        }
+
+        if (!empty($filters['statut'])) {
+            $query->where('statut', $filters['statut']);
+        }
+
+        if (!empty($filters['active'])) {
+            $query->whereDate('active', $filters['active']);
+        }
+
+        return $query->orderByDesc('created_at')->get();
+    }
+
+    public function find($id): ?{{ModelName}}
+    {
+        return {{ModelName}}::find($id);
+    }
+
+    public function create(array $data, User $user): {{ModelName}}
+    {
+        ${{ModelNameLowercase}} = new {{ModelName}}();
+        ${{ModelNameLowercase}}->fill($data);
+        ${{ModelNameLowercase}}->ref_user_creation = $user->id_user;
+        ${{ModelNameLowercase}}->active = true;
+        ${{ModelNameLowercase}}->save();
+
+        return ${{ModelNameLowercase}};
+    }
+
+    public function update({{ModelName}} ${{ModelNameLowercase}}, array $data, User $user): {{ModelName}}
+    {
+        ${{ModelNameLowercase}}->fill($data);
+        ${{ModelNameLowercase}}->update();
+
+        return ${{ModelNameLowercase}};
+    }
+
+    public function toggle({{ModelName}} ${{ModelNameLowercase}}, array $data, User $user): {{ModelName}}
+    {
+        ${{ModelNameLowercase}}->active = !${{ModelNameLowercase}}->active;
+        ${{ModelNameLowercase}}->ref_user_desactivation = ${{ModelNameLowercase}}->active ? null : $user->id_user;
+        ${{ModelNameLowercase}}->update();
+
+        return ${{ModelNameLowercase}};
+    }
+
+    public function delete({{ModelName}} ${{ModelNameLowercase}}): bool
+    {
+        return ${{ModelNameLowercase}}->delete();
+    }
+
+    public function restore({{ModelName}} ${{ModelNameLowercase}}): bool
+    {
+        return ${{ModelNameLowercase}}->restore();
+    }
+
+    public function paginate($perPage = 15)
+    {
+        return {{ModelName}}::paginate($perPage);
+    }
+}

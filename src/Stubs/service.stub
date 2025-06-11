@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Services;
+
+use App\Repositories\{{ModelName}}Repository;
+use App\Models\User;
+
+class {{ModelName}}Service
+{
+    protected ${{ModelNameLowercase}}Repository;
+
+    public function __construct(
+        {{ModelName}}Repository ${{ModelNameLowercase}}Repository
+    ) {
+        $this->{{ModelNameLowercase}}Repository = ${{ModelNameLowercase}}Repository;
+    }
+
+    public function getAll(array $filters)
+    {
+        return $this->{{ModelNameLowercase}}Repository->all($filters);
+    }
+
+    public function getById(string $id)
+    {
+        return $this->{{ModelNameLowercase}}Repository->find($id);
+    }
+
+    public function create(array $data, User $user)
+    {
+        return $this->{{ModelNameLowercase}}Repository->create($data, $user);
+    }
+
+    public function update({{ModelName}} ${{ModelNameLowercase}}, array $data, User $user)
+    {
+        return $this->{{ModelNameLowercase}}Repository->update(${{ModelNameLowercase}}, $data, $user);
+    }
+
+    public function toggle({{ModelName}} ${{ModelNameLowercase}}, array $data, User $user)
+    {
+        return $this->{{ModelNameLowercase}}Repository->toggle(${{ModelNameLowercase}}, $data, $user);
+    }
+
+    public function delete({{ModelName}} ${{ModelNameLowercase}})
+    {
+        return $this->{{ModelNameLowercase}}Repository->delete(${{ModelNameLowercase}});
+    }
+
+    public function restore({{ModelName}} ${{ModelNameLowercase}})
+    {
+        return $this->{{ModelNameLowercase}}Repository->restore(${{ModelNameLowercase}});
+    }
+
+    public function getPaginated($perPage = 15)
+    {
+        ${{ModelNamePlural}} = $this->{{ModelNameLowercase}}Repository->paginate($perPage);
+        ${{ModelNamePlural}}->getCollection()->transform(function (${{ModelNameLowercase}}) {
+            return $this->{{ModelNameLowercase}}Transformer->transform(${{ModelNameLowercase}});
+        });
+        return ${{ModelNamePlural}};
+    }
+}

@@ -1,0 +1,165 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\{{ModelName}}Service;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Transformers\{{ModelName}}Transformer;
+use App\Http\Requests\{{ModelName}}\Store{{ModelName}}Request;
+use App\Http\Requests\{{ModelName}}\Update{{ModelName}}Request;
+
+class {{ModelName}}Controller extends Controller
+{
+    protected ${{ModelNameLowercase}}Service;
+
+    public function __construct({{ModelName}}Service ${{ModelNameLowercase}}Service)
+    {
+        $this->{{ModelNameLowercase}}Service = ${{ModelNameLowercase}}Service;
+    }
+
+    public function index(Request $request)
+    {
+        try{
+            $filters = $request->only([
+                'id',
+                'statut',
+                'active',
+            ]);
+            
+            ${{ModelNamePlural}} = $this->{{ModelNameLowercase}}Service->getAll($filters);
+            return Fractal::collection(${{ModelNamePlural}}, new {{ModelName}}Transformer(true));
+        } catch (\Throwable $th) {
+            
+            return ResponseFormatter::format("Une erreur est survenue lors de l'affichage de la liste des {{ModelNameLowercase}}s", true, 500);
+        }
+    }
+
+    public function show(Request $request, string $id)
+    {
+        try {
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+            
+            if (!${{ModelNameLowercase}}) {
+                return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
+            }
+
+            return Fractal::item(${{ModelNameLowercase}}, new {{ModelName}}Transformer())
+        } catch (\Throwable $th) {
+            
+            return ResponseFormatter::format("Une erreur est survenue lors de l'affichage de {{ModelNameLowercase}}");
+        }
+    }
+
+    public function store(Store{{ModelName}}Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $data = $request->validated();
+            $user = $request->get('user_connected');
+            
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->create($data, $user);
+
+            DB::commit();
+            return ResponseFormatter::format('{{ModelName}} créée avec succès', false, 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return ResponseFormatter::format("Une erreur est survenue lors de la création de {{ModelNameLowercase}}");
+        }
+    }
+
+    public function update(Update{{ModelName}}Request $request, string $id)
+    {
+        try{
+            DB::beginTransaction();
+
+            $data = $request->validated();
+            $user = $request->get('user_connected');
+
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+                
+            if (!${{ModelNameLowercase}}) {
+                return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
+            }
+            
+            $this->{{ModelNameLowercase}}Service->update(${{ModelNameLowercase}}, $data, $user);
+
+            DB::commit();
+            return ResponseFormatter::format('{{ModelName}} modifiée avec succès', false);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return ResponseFormatter::format("Une erreur est survenue lors de la modification de {{ModelNameLowercase}}");
+        }
+    }
+
+    public function toggle(Update{{ModelName}}Request $request, string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $data = $request->validated();
+            $user = $request->get('user_connected');
+
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+                
+            if (!${{ModelNameLowercase}}) {
+                return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
+            }
+
+            $this->{{ModelNameLowercase}}Service->toggle(${{ModelNameLowercase}}, $data, $user);
+
+            DB::commit();
+            return ResponseFormatter::format("{{ModelName}} ".(${{ModelNameLowercase}}->active ? "activée": "desactivée")." avec succès", false, 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return ResponseFormatter::format("Une erreur est survenue lors de la suppression de {{ModelNameLowercase}}");
+        }
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $data = $request->validated();
+            $user = $request->get('user_connected');
+
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+
+            if (!${{ModelNameLowercase}}) {
+                return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
+            }
+
+            $this->{{ModelNameLowercase}}Service->delete(${{ModelNameLowercase}});
+
+            DB::commit();
+            return ResponseFormatter::format("{{ModelName}} supprimé avec succès", false, 200);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return ResponseFormatter::format("Une erreur est survenue lors de la suppression de {{ModelNameLowercase}}");
+        }
+    }
+
+    public function restore(UpdateDemandeRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+
+            if (!${{ModelNameLowercase}}) {
+                return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
+            }
+            
+            $this->{{ModelNameLowercase}}Service->restore(${{ModelNameLowercase}});
+
+            DB::commit();
+            return ResponseFormatter::format('Demande restaurée avec succès', false);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return ResponseFormatter::format("Une erreur est survenue lors de la restauration de {{ModelNameLowercase}}");
+        }
+    }
+}

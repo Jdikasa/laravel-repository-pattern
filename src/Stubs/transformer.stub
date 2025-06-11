@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Transformers;
+
+use App\Models\{{ModelName}};
+use League\Fractal\TransformerAbstract;
+
+class {{ModelName}}Transformer
+{
+    private $short;
+
+    public function __construct($short = false) {
+        $this->short = $short;
+    }
+    
+    /**
+     * List of resources to automatically include
+     *
+     * @var array
+     */
+    protected array $defaultIncludes = [];
+
+    /**
+     * List of resources possible to include
+     *
+     * @var array
+     */
+    protected array $availableIncludes = [];
+
+    /**
+     * A Fractal transformer.
+     *
+     * @return array
+     */
+    public function transform({{ModelName}} ${{ModelNameLowercase}}): array
+    {
+        return [
+            \'id\' => ${{ModelNameLowercase}}->id,
+            // TODO: Ajouter les autres champs selon votre modèle
+            \'created_at\' => ${{ModelNameLowercase}}->created_at?->toISOString(),
+            \'updated_at\' => ${{ModelNameLowercase}}->updated_at?->toISOString(),
+        ];
+    }
+}

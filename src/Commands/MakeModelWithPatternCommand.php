@@ -8,7 +8,7 @@ use Illuminate\Filesystem\Filesystem;
 
 class MakeModelWithPatternCommand extends Command
 {
-    protected $signature = 'make:model {name} {--with-pattern} {--force}';
+    protected $signature = 'make:model {name} {--with-pattern : Generate with repository pattern} {--force}';
     protected $description = 'Create a model with Repository pattern components';
 
     protected $files;
@@ -22,11 +22,13 @@ class MakeModelWithPatternCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $withPattern = $this->option('with-pattern');
+        $withPattern = $this->hasOption('with-pattern') && $this->option('with-pattern');
         $force = $this->option('force');
 
         // Debug: Afficher la valeur de l'option
         $this->info("Debug: with-pattern = " . ($withPattern ? 'true' : 'false'));
+        $this->info("Debug: hasOption = " . ($this->hasOption('with-pattern') ? 'true' : 'false'));
+        $this->info("Debug: option value = " . var_export($this->option('with-pattern'), true));
 
         if (!$withPattern) {
             $this->call('make:model', ['name' => $name]);

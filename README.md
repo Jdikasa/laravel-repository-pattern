@@ -26,7 +26,7 @@ Un package Laravel pour générer automatiquement les composants du pattern Repo
 ## 📦 Installation
 
 ```bash
-composer require votre-nom/laravel-repository-pattern
+composer require jdikasa/laravel-repository-pattern
 ```
 
 ### Laravel 12 - Pré-requis

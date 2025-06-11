@@ -25,6 +25,9 @@ class MakeModelWithPatternCommand extends Command
         $withPattern = $this->option('with-pattern');
         $force = $this->option('force');
 
+        // Debug: Afficher la valeur de l'option
+        $this->info("Debug: with-pattern = " . ($withPattern ? 'true' : 'false'));
+
         if (!$withPattern) {
             $this->call('make:model', ['name' => $name]);
             return;
@@ -43,16 +46,24 @@ class MakeModelWithPatternCommand extends Command
         
         foreach ($components as $type => $suffix) {
             $this->info("✓ Génération du {$type}");
+            
             if ($type === 'request') {
                 $prefix = 'Store';
-                $this->generateComponent($name, $type, $prefix, $suffix, $force);
-                $this->info("✓ {$type} pour {$prefix} généré");
+                $result = $this->generateComponent($name, $type, $prefix, $suffix, $force);
+                if ($result) {
+                    $this->info("✓ {$type} pour {$prefix} généré");
+                }
+                
                 $prefix = 'Update';
-                $this->generateComponent($name, $type,  $prefix, $suffix, $force);
-                $this->info("✓ {$type} pour {$prefix} généré");
-            }else {
-                $this->generateComponent($name, $type, '', $suffix, $force);
-                $this->info("✓ {$type} généré");
+                $result = $this->generateComponent($name, $type, $prefix, $suffix, $force);
+                if ($result) {
+                    $this->info("✓ {$type} pour {$prefix} généré");
+                }
+            } else {
+                $result = $this->generateComponent($name, $type, '', $suffix, $force);
+                if ($result) {
+                    $this->info("✓ {$type} généré");
+                }
             }
         }
 
@@ -65,26 +76,46 @@ class MakeModelWithPatternCommand extends Command
             if ($type === 'model') {
                 $this->call('make:model', ['name' => $name]);
                 $this->line("  ✓ {$name} model created");
-                return;
+                return true;
             }
     
             $className = "{$prefix}{$name}{$suffix}";
-            $stub = $this->getStub($type);
-            $content = $this->replaceStubVariables($stub, $name, $prefix ? $className : '');
             
+            // Debug: Afficher le nom de classe généré
+            $this->info("Debug: Génération de {$className}");
+            
+            $stub = $this->getStub($type);
+            if (!$stub) {
+                $this->error("  ✗ Stub pour {$type} non trouvé");
+                return false;
+            }
+            
+            $content = $this->replaceStubVariables($stub, $name, $prefix ? $className : '');
             $path = $this->getPath($type, $name, $className);
+            
+            // Debug: Afficher le chemin
+            $this->info("Debug: Chemin = {$path}");
             
             if ($this->files->exists($path) && !$force) {
                 $this->error("  ✗ {$className} already exists (use --force to overwrite)");
-                return;
+                return false;
             }
     
             $this->ensureDirectoryExists(dirname($path));
-            $this->files->put($path, $content);
+            $result = $this->files->put($path, $content);
             
-            $this->line("  ✓ {$className} created");
+            if ($result === false) {
+                $this->error("  ✗ Impossible d'écrire {$className}");
+                return false;
+            }
+            
+            $this->line("  ✓ {$className} created at {$path}");
+            return true;
+            
         } catch (\Exception $e) {
             $this->error("  ✗ Erreur lors de la génération de {$className}: {$e->getMessage()}");
+            $this->error("  ✗ Stack trace: " . $e->getTraceAsString());
+            return false;
         }
     }
 
@@ -106,11 +137,20 @@ class MakeModelWithPatternCommand extends Command
         // Chercher d'abord dans les stubs publiés
         $customStubPath = resource_path("stubs/repository-pattern/{$type}.stub");
         if ($this->files->exists($customStubPath)) {
+            $this->info("Debug: Utilisation du stub personnalisé : {$customStubPath}");
             return $this->files->get($customStubPath);
         }
 
         // Sinon utiliser les stubs du package
         $packageStubPath = __DIR__ . "/../Stubs/{$type}.stub";
+        
+        $this->info("Debug: Tentative d'utilisation du stub package : {$packageStubPath}");
+        
+        if (!$this->files->exists($packageStubPath)) {
+            $this->error("Debug: Stub non trouvé : {$packageStubPath}");
+            return null;
+        }
+        
         return $this->files->get($packageStubPath);
     }
 

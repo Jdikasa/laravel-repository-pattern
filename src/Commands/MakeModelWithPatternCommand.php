@@ -61,27 +61,31 @@ class MakeModelWithPatternCommand extends Command
 
     protected function generateComponent($name, $type, $prefix, $suffix, $force)
     {
-        if ($type === 'model') {
-            $this->call('make:model', ['name' => $name]);
-            $this->line("  ✓ {$name} model created");
-            return;
+        try {
+            if ($type === 'model') {
+                $this->call('make:model', ['name' => $name]);
+                $this->line("  ✓ {$name} model created");
+                return;
+            }
+    
+            $className = "{$prefix}{$name}{$suffix}";
+            $stub = $this->getStub($type);
+            $content = $this->replaceStubVariables($stub, $name, $prefix ? $className : '');
+            
+            $path = $this->getPath($type, $name, $className);
+            
+            if ($this->files->exists($path) && !$force) {
+                $this->error("  ✗ {$className} already exists (use --force to overwrite)");
+                return;
+            }
+    
+            $this->ensureDirectoryExists(dirname($path));
+            $this->files->put($path, $content);
+            
+            $this->line("  ✓ {$className} created");
+        } catch (\Exception $e) {
+            $this->error("  ✗ Erreur lors de la génération de {$className}: {$e->getMessage()}");
         }
-
-        $className = "{$prefix}{$name}{$suffix}";
-        $stub = $this->getStub($type);
-        $content = $this->replaceStubVariables($stub, $name, $prefix ? $className : '');
-        
-        $path = $this->getPath($type, $name, $className);
-        
-        if ($this->files->exists($path) && !$force) {
-            $this->error("  ✗ {$className} already exists (use --force to overwrite)");
-            return;
-        }
-
-        $this->ensureDirectoryExists(dirname($path));
-        $this->files->put($path, $content);
-        
-        $this->line("  ✓ {$className} created");
     }
 
     protected function getPath($type, $name, $className)

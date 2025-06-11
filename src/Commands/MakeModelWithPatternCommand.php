@@ -31,7 +31,7 @@ class MakeModelWithPatternCommand extends Command
         }
 
         $this->info("🚀 Génération du pattern Repository pour : {$name}");
-
+        
         $components = [
             'model' => 'Model',
             'repository' => 'Repository', 
@@ -40,15 +40,19 @@ class MakeModelWithPatternCommand extends Command
             'transformer' => 'Transformer',
             'request' => 'Request',
         ];
-
+        
         foreach ($components as $type => $suffix) {
+            $this->info("✓ Génération du {$type}");
             if ($type === 'request') {
                 $prefix = 'Store';
                 $this->generateComponent($name, $type, $prefix, $suffix, $force);
+                $this->info("✓ {$type} pour {$prefix} généré");
                 $prefix = 'Update';
                 $this->generateComponent($name, $type,  $prefix, $suffix, $force);
+                $this->info("✓ {$type} pour {$prefix} généré");
             }else {
                 $this->generateComponent($name, $type, '', $suffix, $force);
+                $this->info("✓ {$type} généré");
             }
         }
 

@@ -2,26 +2,25 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jdikasa/laravel-repository-pattern.svg?style=flat-square)](https://packagist.org/packages/jdikasa/laravel-repository-pattern)
 [![Total Downloads](https://img.shields.io/packagist/dt/jdikasa/laravel-repository-pattern.svg?style=flat-square)](https://packagist.org/packages/jdikasa/laravel-repository-pattern)
-[![Laravel 12.x](https://img.shields.io/badge/Laravel-12.x-red.svg?style=flat-square)](https://laravel.com)
-[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2+-blue.svg?style=flat-square)](https://php.net)
+[![Laravel 9.x|10.x|11.x](https://img.shields.io/badge/Laravel-9.x%7C10.x%7C11.x-red.svg?style=flat-square)](https://laravel.com)
+[![PHP 8.0+](https://img.shields.io/badge/PHP-8.0+-blue.svg?style=flat-square)](https://php.net)
 
-Un package Laravel pour générer automatiquement les composants du pattern Repository : Model, Repository, Service, Controller et Transformer.
+Un package Laravel puissant pour générer automatiquement tous les composants du pattern Repository en une seule commande : Model, Repository, Service, Controller, Transformer et Requests.
+
+## ✨ Fonctionnalités
+
+- 🚀 **Génération complète** : Model, Repository, Service, Controller, Transformer, Requests (Store/Update)
+- 🎨 **Stubs personnalisables** : Adaptez les templates à vos besoins
+- 📁 **Structure organisée** : Chaque composant dans son dossier approprié
+- ⚡ **Une seule commande** : Générez tout le pattern en une fois
+- 🔧 **Configuration flexible** : Personnalisez les namespaces et dossiers
+- 📝 **Code propre** : Templates respectant les bonnes pratiques Laravel
 
 ## 🎯 Compatibilité
 
-| Version Package | Laravel | PHP | Carbon |
-|----------------|---------|-----|--------|
-| 3.x | 12.x | 8.2+ | 3.x |
-| 2.x | 10.x, 11.x | 8.1+ | 2.x, 3.x |
-| 1.x | 9.x, 10.x | 8.0+ | 2.x |
-
-## ⚡ Nouvelles fonctionnalités Laravel 12
-
-- ✅ Support complet de **Carbon 3.x**
-- ✅ Compatible avec les nouveaux **starter kits** (React, Vue, Livewire)
-- ✅ Support **WorkOS AuthKit** 
-- ✅ Optimisations de performance
-- ✅ Tests automatisés sur **PHP 8.2, 8.3, 8.4**
+| Version Package | Laravel | PHP |
+|----------------|---------|-----|
+| 1.x | 9.x, 10.x, 11.x | 8.0+ |
 
 ## 📦 Installation
 
@@ -29,142 +28,194 @@ Un package Laravel pour générer automatiquement les composants du pattern Repo
 composer require jdikasa/laravel-repository-pattern
 ```
 
-### Laravel 12 - Pré-requis
-
-```bash
-# Vérifier votre version PHP
-php --version  # Doit être >= 8.2
-
-# Vérifier votre version Laravel
-php artisan --version  # Doit être >= 12.0
-```
+Le package se configure automatiquement grâce à la découverte automatique de Laravel.
 
 ## 🚀 Utilisation
 
-```bash
-# Génération complète du pattern
-php artisan make:model Post --with-pattern
+### Commande principale
 
-# Avec options Laravel 12
-php artisan make:model Post --with-pattern --starter-kit=react --with-workos
+```bash
+php artisan make:model-pattern Post
 ```
 
-## 🔧 Configuration Laravel 12
+Cette commande génère automatiquement :
+
+- ✅ `app/Models/Post.php` - Le modèle Eloquent
+- ✅ `app/Repositories/PostRepository.php` - Le repository
+- ✅ `app/Services/PostService.php` - La couche service
+- ✅ `app/Http/Controllers/PostController.php` - Le contrôleur
+- ✅ `app/Transformers/PostTransformer.php` - Le transformer
+- ✅ `app/Http/Requests/Post/StorePostRequest.php` - Request pour création
+- ✅ `app/Http/Requests/Post/UpdatePostRequest.php` - Request pour mise à jour
+
+### Options disponibles
 
 ```bash
-# Publier la configuration
+# Forcer l'écrasement des fichiers existants
+php artisan make:model-pattern Post --force
+```
+
+## 🏗️ Structure générée
+
+```
+app/
+├── Models/
+│   └── Post.php
+├── Repositories/
+│   └── PostRepository.php
+├── Services/
+│   └── PostService.php
+├── Http/
+│   ├── Controllers/
+│   │   └── PostController.php
+│   └── Requests/
+│       └── Post/
+│           ├── StorePostRequest.php
+│           └── UpdatePostRequest.php
+└── Transformers/
+    └── PostTransformer.php
+```
+
+## 🔧 Configuration
+
+### Publier la configuration
+
+```bash
 php artisan vendor:publish --tag=repository-pattern-config
-
-# Publier les stubs personnalisables
-php artisan vendor:publish --tag=repository-pattern-stubs
 ```
 
-### Configuration des nouveaux starter kits
+### Fichier de configuration
 
 ```php
 // config/repository-pattern.php
 return [
-    'starter_kits' => [
-        'react' => [
-            'enabled' => true,
-            'with_workos' => false,
-        ],
-        'vue' => [
-            'enabled' => false,
-            'with_workos' => false,
-        ],
-        'livewire' => [
-            'enabled' => true,
-            'with_workos' => true,
-        ],
-    ],
+    'repository_namespace' => 'App\\Repositories',
+    'service_namespace' => 'App\\Services',
+    'transformer_namespace' => 'App\\Transformers',
     
-    // Support Carbon 3.x
-    'carbon' => [
-        'version' => '3.x',
-        'immutable' => true,
-        'locale' => 'fr',
+    'paths' => [
+        'repositories' => 'app/Repositories',
+        'services' => 'app/Services',
+        'transformers' => 'app/Transformers',
     ],
 ];
 ```
 
-## 🧪 Migration depuis Laravel 11
-
-### 1. Mise à jour des dépendances
+### Publier les stubs (optionnel)
 
 ```bash
-# Mettre à jour Laravel
-composer require laravel/framework:^12.0
-
-# Mettre à jour le package
-composer require votre-nom/laravel-repository-pattern:^3.0
+php artisan vendor:publish --tag=repository-pattern-stubs
 ```
 
-### 2. Migration Carbon 3.x
+Les stubs seront publiés dans `resources/stubs/repository-pattern/` et vous pourrez les personnaliser selon vos besoins.
+
+## 📝 Exemple d'utilisation
+
+Après avoir généré les composants pour `Post` :
+
+### 1. Repository
 
 ```php
-// Avant (Carbon 2.x)
-$date = Carbon::now()->toDateTimeString();
-
-// Après (Carbon 3.x)
-$date = Carbon::now()->toISOString();
-```
-
-### 3. Republier la configuration
-
-```bash
-php artisan vendor:publish --tag=repository-pattern-config --force
-```
-
-## 🔥 Nouveautés Laravel 12
-
-### Support des starter kits modernes
-
-```bash
-# Générer avec React + WorkOS
-php artisan make:model User --with-pattern --starter-kit=react --with-workos
-
-# Générer avec Livewire + WorkOS
-php artisan make:model Product --with-pattern --starter-kit=livewire --with-workos
-```
-
-### Transformers optimisés Carbon 3.x
-
-```php
-class PostTransformer extends BaseTransformer
+// app/Repositories/PostRepository.php
+class PostRepository extends BaseRepository
 {
-    public function transform(Post $post): array
+    public function model(): string
     {
-        return [
-            'id' => $post->id,
-            'title' => $post->title,
-            // Carbon 3.x - Format ISO natif
-            'created_at' => $post->created_at?->toISOString(),
-            'updated_at' => $post->updated_at?->toISOString(),
-        ];
+        return Post::class;
+    }
+    
+    public function getPublishedPosts()
+    {
+        return $this->model->where('status', 'published')->get();
     }
 }
 ```
 
-## 🧪 Tests
+### 2. Service
 
-```bash
-# Tests sur toutes les versions
-composer test
-
-# Tests spécifiques Laravel 12
-./vendor/bin/phpunit --group=laravel12
+```php
+// app/Services/PostService.php
+class PostService
+{
+    public function __construct(
+        private PostRepository $postRepository
+    ) {}
+    
+    public function createPost(array $data): Post
+    {
+        return $this->postRepository->create($data);
+    }
+}
 ```
 
-## 📈 Performances Laravel 12
+### 3. Controller
 
-- ⚡ **+15%** plus rapide que Laravel 11
-- 🚀 **Carbon 3.x** : performance améliorée des dates
-- 💾 **Optimisations mémoire** : -20% d'utilisation RAM
+```php
+// app/Http/Controllers/PostController.php
+class PostController extends Controller
+{
+    public function __construct(
+        private PostService $postService,
+        private PostTransformer $postTransformer
+    ) {}
+    
+    public function store(StorePostRequest $request)
+    {
+        $post = $this->postService->createPost($request->validated());
+        
+        return response()->json([
+            'data' => $this->postTransformer->transform($post)
+        ], 201);
+    }
+}
+```
+
+## 🎨 Personnalisation des stubs
+
+Une fois les stubs publiés, vous pouvez personnaliser les templates dans `resources/stubs/repository-pattern/` :
+
+- `repository.stub` - Template du repository
+- `service.stub` - Template du service
+- `controller.stub` - Template du contrôleur
+- `transformer.stub` - Template du transformer
+- `request.stub` - Template des requests
+
+### Variables disponibles dans les stubs
+
+- `{{ModelName}}` - Nom du modèle (ex: Post)
+- `{{ModelNameLowercase}}` - Nom du modèle en camelCase (ex: post)
+- `{{ModelNamePlural}}` - Nom du modèle au pluriel (ex: posts)
+- `{{ModelNameKebab}}` - Nom du modèle en kebab-case (ex: post-category)
+- `{{ModelNameSnake}}` - Nom du modèle en snake_case (ex: post_category)
+- `{{RepositoryNamespace}}` - Namespace des repositories
+- `{{ServiceNamespace}}` - Namespace des services
+- `{{TransformerNamespace}}` - Namespace des transformers
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues ! Veuillez consulter [CONTRIBUTING.md](CONTRIBUTING.md).
+Les contributions sont les bienvenues ! Pour contribuer :
+
+1. Fork le projet
+2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/nouvelle-fonctionnalite`)
+3. Committez vos changements (`git commit -am 'Ajout d'une nouvelle fonctionnalité'`)
+4. Poussez vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
+5. Ouvrez une Pull Request
+
+## 📋 Roadmap
+
+- [ ] Support des migrations automatiques
+- [ ] Génération des tests automatiques
+- [ ] Support des relations Eloquent
+- [ ] Templates pour API Resources
+- [ ] Support des Factory et Seeders
+
+## 🐛 Signaler un bug
+
+Si vous trouvez un bug, veuillez ouvrir une issue sur [GitHub](https://github.com/jdikasa/laravel-repository-pattern/issues) avec :
+- La version de Laravel utilisée
+- La version du package
+- Les étapes pour reproduire le bug
+- Le message d'erreur complet
 
 ## 📄 Licence
 
@@ -172,17 +223,15 @@ Ce package est open source sous licence [MIT](LICENSE.md).
 
 ## 🏷️ Changelog
 
-### v3.0.0 - Support Laravel 12
-- ✅ Support complet Laravel 12.x
-- ✅ Migration Carbon 3.x
-- ✅ Nouveaux starter kits
-- ✅ Support WorkOS AuthKit
-- ⚡ Optimisations de performance
-
-### v2.0.0 - Support Laravel 11
-- ✅ Support Laravel 10.x et 11.x
-- ✅ PHP 8.1+ requis
-
 ### v1.0.0 - Release initiale
-- ✅ Support Laravel 9.x, 10.x
-- ✅ Pattern Repository complet
+- ✅ Génération complète du pattern Repository
+- ✅ Support Laravel 9.x, 10.x, 11.x
+- ✅ Stubs personnalisables
+- ✅ Configuration flexible
+- ✅ Documentation complète
+
+---
+
+<p align="center">
+Développé avec ❤️ par <a href="https://github.com/jdikasa">Jdikasa</a>
+</p>

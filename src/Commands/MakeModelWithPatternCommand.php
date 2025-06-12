@@ -5,10 +5,11 @@ namespace Jdikasa\LaravelRepositoryPattern\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
 
 class MakeModelWithPatternCommand extends Command
 {
-    protected $signature = 'make:model {name} {--with-pattern : Generate with repository pattern} {--force}';
+    protected $signature = 'make:model-pattern {name} {--force : Force overwrite existing files}';
     protected $description = 'Create a model with Repository pattern components';
 
     protected $files;
@@ -22,18 +23,7 @@ class MakeModelWithPatternCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $withPattern = $this->hasOption('with-pattern');//&& $this->option('with-pattern');
         $force = $this->option('force');
-
-        // Debug: Afficher la valeur de l'option
-        $this->info("Debug: with-pattern = " . ($withPattern ? 'true' : 'false'));
-        $this->info("Debug: hasOption = " . ($this->hasOption('with-pattern') ? 'true' : 'false'));
-        $this->info("Debug: option value = " . var_export($this->option('with-pattern'), true));
-
-        if (!$withPattern) {
-            $this->call('make:model', ['name' => $name]);
-            return;
-        }
 
         $this->info("🚀 Génération du pattern Repository pour : {$name}");
         
@@ -76,7 +66,7 @@ class MakeModelWithPatternCommand extends Command
     {
         try {
             if ($type === 'model') {
-                $this->call('make:model', ['name' => $name]);
+                Artisan::call('make:model', ['name' => $name]);
                 $this->line("  ✓ {$name} model created");
                 return true;
             }

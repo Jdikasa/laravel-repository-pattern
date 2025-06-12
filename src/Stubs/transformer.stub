@@ -12,7 +12,7 @@ class {{ModelName}}Transformer
     public function __construct($short = false) {
         $this->short = $short;
     }
-    
+
     /**
      * List of resources to automatically include
      *
@@ -35,10 +35,10 @@ class {{ModelName}}Transformer
     public function transform({{ModelName}} ${{ModelNameLowercase}}): array
     {
         return [
-            \'id\' => ${{ModelNameLowercase}}->id,
+            "id" => ${{ModelNameLowercase}}->id,
             // TODO: Ajouter les autres champs selon votre modèle
-            \'created_at\' => ${{ModelNameLowercase}}->created_at?->toISOString(),
-            \'updated_at\' => ${{ModelNameLowercase}}->updated_at?->toISOString(),
+            "created_at" => ${{ModelNameLowercase}}->created_at?->toISOString(),
+            "updated_at" => ${{ModelNameLowercase}}->updated_at?->toISOString(),
         ];
     }
 }

@@ -19,6 +19,11 @@ class RepositoryPatternServiceProvider extends ServiceProvider
             __DIR__.'/config/repository-pattern.php' => config_path('repository-pattern.php'),
         ], 'repository-pattern-config');
 
+        // Publier les helpers
+        $this->publishes([
+            __DIR__.'/Helpers' => app_path('Helpers'),
+        ],'repository-pattern-helpers');
+
         // Enregistrer les commandes - Compatible Laravel 12
         if ($this->app->runningInConsole()) {
             $this->commands([

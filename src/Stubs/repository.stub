@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
 use App\Models\{{ModelName}};
 use Illuminate\Database\Eloquent\Collection;
 
@@ -27,8 +28,11 @@ class {{ModelName}}Repository
         return $query->orderByDesc('created_at')->get();
     }
 
-    public function find($id): ?{{ModelName}}
+    public function find(string $id, bool $withTrashed = false): ?{{ModelName}}
     {
+        if ($withTrashed) {
+            return {{ModelName}}::withTrashed()->find($id);
+        }
         return {{ModelName}}::find($id);
     }
 

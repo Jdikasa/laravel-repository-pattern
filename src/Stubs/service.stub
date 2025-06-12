@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Repositories\{{ModelName}}Repository;
 use App\Models\User;
+use App\Models\{{ModelName}};
+use App\Repositories\{{ModelName}}Repository;
 
 class {{ModelName}}Service
 {
@@ -20,7 +21,7 @@ class {{ModelName}}Service
         return $this->{{ModelNameLowercase}}Repository->all($filters);
     }
 
-    public function getById(string $id)
+    public function getById(string $id, bool $withTrashed = false)
     {
         return $this->{{ModelNameLowercase}}Repository->find($id);
     }
@@ -52,10 +53,6 @@ class {{ModelName}}Service
 
     public function getPaginated($perPage = 15)
     {
-        ${{ModelNamePlural}} = $this->{{ModelNameLowercase}}Repository->paginate($perPage);
-        ${{ModelNamePlural}}->getCollection()->transform(function (${{ModelNameLowercase}}) {
-            return $this->{{ModelNameLowercase}}Transformer->transform(${{ModelNameLowercase}});
-        });
-        return ${{ModelNamePlural}};
+        return $this->{{ModelNameLowercase}}Repository->paginate($perPage);
     }
 }

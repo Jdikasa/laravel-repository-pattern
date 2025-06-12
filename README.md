@@ -109,6 +109,14 @@ php artisan vendor:publish --tag=repository-pattern-stubs
 
 Les stubs seront publiés dans `resources/stubs/repository-pattern/` et vous pourrez les personnaliser selon vos besoins.
 
+### Publier les helpers (optionnel)
+
+```bash
+php artisan vendor:publish --tag=repository-pattern-helpers
+```
+
+Les helpers seront publiés dans `app/Helpers/` et vous pourrez les personnaliser selon vos besoins.
+
 ## 📝 Exemple d'utilisation
 
 Après avoir généré les composants pour `Post` :

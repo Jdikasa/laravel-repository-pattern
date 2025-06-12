@@ -29,7 +29,7 @@ class MakeModelWithPatternCommand extends Command
         $this->info("🚀 Génération du pattern Repository pour : {$name}");
 
         $components = [
-            'model' => 'Model',
+            // 'model' => 'Model',
             'repository' => 'Repository',
             'service' => 'Service',
             'controller' => 'Controller',
@@ -56,7 +56,7 @@ class MakeModelWithPatternCommand extends Command
                 }
             } else {
                 if(!$config['generations'][$type]) return;
-                
+
                 $result = $this->generateComponent($name, $type, '', $suffix, $force);
                 if ($result) {
                     $this->info("✓ {$type} généré");

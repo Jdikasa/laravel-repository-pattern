@@ -23,7 +23,7 @@ class {{ModelName}}{{ServiceSufix}}
 
     public function getById(string $id, bool $withTrashed = false)
     {
-        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->find($id);
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->find($id, $withTrashed);
     }
 
     public function create(array $data, User $user)

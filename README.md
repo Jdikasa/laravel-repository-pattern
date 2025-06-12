@@ -122,6 +122,7 @@ return [
      * Les options suivantes peuvent être définies à true ou false
      */
     'generations' => [
+        'model' => true,
         'controller' => true,
         'repository' => true,
         'transformer' => true,
@@ -309,5 +310,5 @@ Ce package est open source sous licence [MIT](LICENSE.md).
 ---
 
 <p align="center">
-Développé avec ❤️ par <a href="https://github.com/jdikasa">Jdikasa</a>
+Développé avec ❤️ par <a href="https://github.com/jdikasa">Jean-louis Dikasa</a>
 </p>

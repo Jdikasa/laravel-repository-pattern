@@ -10,6 +10,7 @@ use {{RequestsNamespace}}\{{ModelName}}\{{RequestUpdatePrefix}}{{ModelName}}{{Re
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ResponseFormatter;
 use Spatie\Fractal\Facades\Fractal;
+use App\Http\Controllers\Controller;
 
 class {{ControllerPrefix}}{{ModelName}}{{ControllerSufix}} extends Controller
 {

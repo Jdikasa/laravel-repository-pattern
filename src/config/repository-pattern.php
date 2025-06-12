@@ -42,6 +42,7 @@ return [
      * Les options suivantes peuvent être définies à true ou false
      */
     'generations' => [
+        'model' => true,
         'controller' => true,
         'repository' => true,
         'transformer' => true,

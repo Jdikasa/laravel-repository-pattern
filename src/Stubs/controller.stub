@@ -91,7 +91,7 @@ class {{ControllerPrefix}}{{ModelName}}{{ControllerSufix}} extends Controller
             $data = $request->validated();
             $user = $request->get('user_connected');
             
-            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->create($data, $user);
+            $this->{{ModelNameLowercase}}{{ServiceSufix}}->create($data, $user);
 
             DB::commit();
             return ResponseFormatter::format('{{ModelName}} créée avec succès', false, 201);

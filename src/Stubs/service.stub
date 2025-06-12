@@ -1,58 +1,58 @@
 <?php
 
-namespace App\Services;
+namespace {{ServicesNamespace}};
 
 use App\Models\User;
 use App\Models\{{ModelName}};
-use App\Repositories\{{ModelName}}Repository;
+use {{RepositoriesNamespace}}\{{RepositoryPrefix}}{{ModelName}}{{RepositorySufix}};
 
-class {{ModelName}}Service
+class {{ModelName}}{{ServiceSufix}}
 {
-    protected ${{ModelNameLowercase}}Repository;
+    protected ${{ModelNameLowercase}}{{RepositorySufix}};
 
     public function __construct(
-        {{ModelName}}Repository ${{ModelNameLowercase}}Repository
+        {{RepositoryPrefix}}{{ModelName}}{{RepositorySufix}} ${{ModelNameLowercase}}{{RepositorySufix}}
     ) {
-        $this->{{ModelNameLowercase}}Repository = ${{ModelNameLowercase}}Repository;
+        $this->{{ModelNameLowercase}}{{RepositorySufix}} = ${{ModelNameLowercase}}{{RepositorySufix}};
     }
 
     public function getAll(array $filters)
     {
-        return $this->{{ModelNameLowercase}}Repository->all($filters);
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->all($filters);
     }
 
     public function getById(string $id, bool $withTrashed = false)
     {
-        return $this->{{ModelNameLowercase}}Repository->find($id);
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->find($id);
     }
 
     public function create(array $data, User $user)
     {
-        return $this->{{ModelNameLowercase}}Repository->create($data, $user);
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->create($data, $user);
     }
 
     public function update({{ModelName}} ${{ModelNameLowercase}}, array $data, User $user)
     {
-        return $this->{{ModelNameLowercase}}Repository->update(${{ModelNameLowercase}}, $data, $user);
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->update(${{ModelNameLowercase}}, $data, $user);
     }
 
     public function toggle({{ModelName}} ${{ModelNameLowercase}}, array $data, User $user)
     {
-        return $this->{{ModelNameLowercase}}Repository->toggle(${{ModelNameLowercase}}, $data, $user);
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->toggle(${{ModelNameLowercase}}, $data, $user);
     }
 
     public function delete({{ModelName}} ${{ModelNameLowercase}})
     {
-        return $this->{{ModelNameLowercase}}Repository->delete(${{ModelNameLowercase}});
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->delete(${{ModelNameLowercase}});
     }
 
     public function restore({{ModelName}} ${{ModelNameLowercase}})
     {
-        return $this->{{ModelNameLowercase}}Repository->restore(${{ModelNameLowercase}});
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->restore(${{ModelNameLowercase}});
     }
 
     public function getPaginated($perPage = 15)
     {
-        return $this->{{ModelNameLowercase}}Repository->paginate($perPage);
+        return $this->{{ModelNameLowercase}}{{RepositorySufix}}->paginate($perPage);
     }
 }

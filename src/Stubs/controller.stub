@@ -1,33 +1,33 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace {{ControllersNamespace}};
 
-use App\Services\{{ModelName}}Service;
+use {{ServicesNamespace}}\{{ServicePrefix}}{{ModelName}}{{ServiceSufix}};
 use Illuminate\Http\Request;
-use App\Transformers\{{ModelName}}Transformer;
-use App\Http\Requests\{{ModelName}}\Store{{ModelName}}Request;
-use App\Http\Requests\{{ModelName}}\Update{{ModelName}}Request;
+use {{TransformersNamespace}}\{{TransformerPrefix}}{{ModelName}}{{TransformerSufix}};
+use {{RequestsNamespace}}\{{ModelName}}\{{RequestStorePrefix}}{{ModelName}}{{RequestSufix}};
+use {{RequestsNamespace}}\{{ModelName}}\{{RequestUpdatePrefix}}{{ModelName}}{{RequestSufix}};
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ResponseFormatter;
 use Spatie\Fractal\Facades\Fractal;
 
-class {{ModelName}}Controller extends Controller
+class {{ControllerPrefix}}{{ModelName}}{{ControllerSufix}} extends Controller
 {
     /**
      * Le service métier associé à ce contrôleur.
      *
-     * @var {{ModelName}}Service
+     * @var {{ServicePrefix}}{{ModelName}}{{ServiceSufix}}
      */
-    protected ${{ModelNameLowercase}}Service;
+    protected ${{ModelNameLowercase}}{{ServiceSufix}};
 
     /**
      * Crée une nouvelle instance du contrôleur.
      *
-     * @param {{ModelName}}Service ${{ModelNameLowercase}}Service Le service métier associé à ce contrôleur.
+     * @param {{ServicePrefix}}{{ModelName}}{{ServiceSufix}} ${{ModelNameLowercase}}{{ServiceSufix}} Le service métier associé à ce contrôleur.
      */
-    public function __construct({{ModelName}}Service ${{ModelNameLowercase}}Service)
+    public function __construct({{ServicePrefix}}{{ModelName}}{{ServiceSufix}} ${{ModelNameLowercase}}{{ServiceSufix}})
     {
-        $this->{{ModelNameLowercase}}Service = ${{ModelNameLowercase}}Service;
+        $this->{{ModelNameLowercase}}{{ServiceSufix}} = ${{ModelNameLowercase}}{{ServiceSufix}};
     }
 
     /**
@@ -45,8 +45,8 @@ class {{ModelName}}Controller extends Controller
                 'active',
             ]);
             
-            ${{ModelNamePlural}} = $this->{{ModelNameLowercase}}Service->getAll($filters);
-            return Fractal::collection(${{ModelNamePlural}}, new {{ModelName}}Transformer(true));
+            ${{ModelNamePlural}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->getAll($filters);
+            return Fractal::collection(${{ModelNamePlural}}, new {{TransformerPrefix}}{{ModelName}}{{TransformerSufix}}(true));
         } catch (\Throwable $th) {
             
             return ResponseFormatter::format("Une erreur est survenue lors de l'affichage de la liste des {{ModelNameLowercase}}s", true, 500);
@@ -63,13 +63,13 @@ class {{ModelName}}Controller extends Controller
     public function show(Request $request, string $id)
     {
         try {
-            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->getById($id);
             
             if (!${{ModelNameLowercase}}) {
                 return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
             }
 
-            return Fractal::item(${{ModelNameLowercase}}, new {{ModelName}}Transformer());
+            return Fractal::item(${{ModelNameLowercase}}, new {{TransformerPrefix}}{{ModelName}}{{TransformerSufix}}());
         } catch (\Throwable $th) {
             
             return ResponseFormatter::format("Une erreur est survenue lors de l'affichage de {{ModelNameLowercase}}");
@@ -82,7 +82,7 @@ class {{ModelName}}Controller extends Controller
      * @param Request $request La requête HTTP contenant les données du {{ModelNameLowercase}} à créer.
      * @return \Illuminate\Http\JsonResponse La réponse JSON contenant le {{ModelNameLowercase}} créé.
      */
-    public function store(Store{{ModelName}}Request $request)
+    public function store({{RequestStorePrefix}}{{ModelName}}{{RequestSufix}} $request)
     {
         try {
             DB::beginTransaction();
@@ -90,7 +90,7 @@ class {{ModelName}}Controller extends Controller
             $data = $request->validated();
             $user = $request->get('user_connected');
             
-            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->create($data, $user);
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->create($data, $user);
 
             DB::commit();
             return ResponseFormatter::format('{{ModelName}} créée avec succès', false, 201);
@@ -107,7 +107,7 @@ class {{ModelName}}Controller extends Controller
      * @param string $id L'ID du {{ModelNameLowercase}} à mettre à jour.
      * @return \Illuminate\Http\JsonResponse La réponse JSON contenant le {{ModelNameLowercase}} mis à jour.
      */
-    public function update(Update{{ModelName}}Request $request, string $id)
+    public function update({{RequestUpdatePrefix}}{{ModelName}}{{RequestSufix}} $request, string $id)
     {
         try{
             DB::beginTransaction();
@@ -115,13 +115,13 @@ class {{ModelName}}Controller extends Controller
             $data = $request->validated();
             $user = $request->get('user_connected');
 
-            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->getById($id);
                 
             if (!${{ModelNameLowercase}}) {
                 return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
             }
             
-            $this->{{ModelNameLowercase}}Service->update(${{ModelNameLowercase}}, $data, $user);
+            $this->{{ModelNameLowercase}}{{ServiceSufix}}->update(${{ModelNameLowercase}}, $data, $user);
 
             DB::commit();
             return ResponseFormatter::format('{{ModelName}} modifiée avec succès', false);
@@ -138,7 +138,7 @@ class {{ModelName}}Controller extends Controller
      * @param string $id L'ID du {{ModelNameLowercase}} à activer/desactiver.
      * @return \Illuminate\Http\JsonResponse La réponse JSON contenant le {{ModelNameLowercase}} activer/desactiver.
      */
-    public function toggle(Update{{ModelName}}Request $request, string $id)
+    public function toggle({{RequestUpdatePrefix}}{{ModelName}}{{RequestSufix}} $request, string $id)
     {
         try {
             DB::beginTransaction();
@@ -146,13 +146,13 @@ class {{ModelName}}Controller extends Controller
             $data = $request->validated();
             $user = $request->get('user_connected');
 
-            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->getById($id);
                 
             if (!${{ModelNameLowercase}}) {
                 return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
             }
 
-            $this->{{ModelNameLowercase}}Service->toggle(${{ModelNameLowercase}}, $data, $user);
+            $this->{{ModelNameLowercase}}{{ServiceSufix}}->toggle(${{ModelNameLowercase}}, $data, $user);
 
             DB::commit();
             return ResponseFormatter::format("{{ModelName}} ".(${{ModelNameLowercase}}->active ? "activée": "desactivée")." avec succès", false, 200);
@@ -165,7 +165,6 @@ class {{ModelName}}Controller extends Controller
     /**
      * Supprime un {{ModelNameLowercase}} existant.
      *
-     * @param Request $request La requête HTTP contenant les données du {{ModelNameLowercase}} à supprimer.
      * @param string $id L'ID du {{ModelNameLowercase}} à supprimer.
      * @return \Illuminate\Http\JsonResponse La réponse JSON contenant le {{ModelNameLowercase}} supprimer.
      */
@@ -174,13 +173,13 @@ class {{ModelName}}Controller extends Controller
         try {
             DB::beginTransaction();
 
-            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id);
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->getById($id);
 
             if (!${{ModelNameLowercase}}) {
                 return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
             }
 
-            $this->{{ModelNameLowercase}}Service->delete(${{ModelNameLowercase}});
+            $this->{{ModelNameLowercase}}{{ServiceSufix}}->delete(${{ModelNameLowercase}});
 
             DB::commit();
             return ResponseFormatter::format("{{ModelName}} supprimé avec succès", false, 200);
@@ -194,7 +193,6 @@ class {{ModelName}}Controller extends Controller
     /**
      * Restaure un {{ModelNameLowercase}} supprimé.
      *
-     * @param Request $request La requête HTTP contenant les données du {{ModelNameLowercase}} à restaurer.
      * @param string $id L'ID du {{ModelNameLowercase}} à restaurer.
      * @return \Illuminate\Http\JsonResponse La réponse JSON contenant le {{ModelNameLowercase}} restaurer.
      */
@@ -203,13 +201,13 @@ class {{ModelName}}Controller extends Controller
         try {
             DB::beginTransaction();
 
-            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}Service->getById($id, true);
+            ${{ModelNameLowercase}} = $this->{{ModelNameLowercase}}{{ServiceSufix}}->getById($id, true);
 
             if (!${{ModelNameLowercase}}) {
                 return ResponseFormatter::format("{{ModelName}} non trouvée", true, 404);
             }
             
-            $this->{{ModelNameLowercase}}Service->restore(${{ModelNameLowercase}});
+            $this->{{ModelNameLowercase}}{{ServiceSufix}}->restore(${{ModelNameLowercase}});
 
             DB::commit();
             return ResponseFormatter::format('Demande restaurée avec succès', false);

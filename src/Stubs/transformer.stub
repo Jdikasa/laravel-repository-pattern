@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Transformers;
+namespace {{TransformersNamespace}};
 
 use App\Models\{{ModelName}};
 use League\Fractal\TransformerAbstract;
 
-class {{ModelName}}Transformer
+class {{TransformerPrefix}}{{ModelName}}{{TransformerSufix}}
 {
     private $short;
 
@@ -34,6 +34,12 @@ class {{ModelName}}Transformer
      */
     public function transform({{ModelName}} ${{ModelNameLowercase}}): array
     {
+        if($this->short)
+            return [
+                "id" => ${{ModelNameLowercase}}->id
+                // TODO: Ajouter les autres champs selon votre modèle
+            ];
+
         return [
             "id" => ${{ModelNameLowercase}}->id,
             // TODO: Ajouter les autres champs selon votre modèle

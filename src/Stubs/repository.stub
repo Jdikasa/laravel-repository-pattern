@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Repositories;
+namespace {{RepositoriesNamespace}};
 
 use App\Models\User;
 use App\Models\{{ModelName}};
 use Illuminate\Database\Eloquent\Collection;
 
-class {{ModelName}}Repository
+class {{RepositoryPrefix}}{{ModelName}}{{RepositorySufix}}
 {
 
     public function all(array $filters): Collection

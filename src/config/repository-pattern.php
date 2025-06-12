@@ -10,66 +10,80 @@ return [
     |
     */
 
-    // Namespaces personnalisés
-    'repository_namespace' => 'App\\Repositories',
-    'service_namespace' => 'App\\Services',
-    'transformer_namespace' => 'App\\Transformers',
-
-    // Répertoires de génération
-    'repository_path' => 'app/Repositories',
-    'service_path' => 'app/Services', 
-    'transformer_path' => 'app/Transformers',
-
-    // Options de génération
-    'generate_interfaces' => false,
-    'generate_tests' => false,
-    'generate_form_requests' => false,
-
-    // Templates personnalisés
-    'custom_stubs' => [
-        'repository' => null,
-        'service' => null,
-        'controller' => null,
-        'transformer' => null,
-        'request' => null,
+    /**
+     * Namespaces personnalisés
+     */
+    'namespaces' => [
+        'repository' => 'App\\Repositories',
+        'service' => 'App\\Services',
+        'transformer' => 'App\\Transformers',
+        'controller' => 'App\\Http\\Controllers',
+        'request' => 'App\\Http\\Requests',
     ],
 
-    // Suffixes des classes
+    /**
+     * Répertoires de génération
+     * 
+     * Ces repertoires doivent correspondre à vos namespaces personnalisés
+     */
+    'paths' => [
+        'repository' => 'app/Repositories',
+        'service' => 'app/Services',
+        'transformer' => 'app/Transformers',
+        'controller' => 'app/Http/Controllers',
+        'request' => 'app/Http/Requests',
+    ],
+
+    /**
+     * Options de génération
+     * 
+     * Choisissez quelles classes générer
+     * 
+     * Les options suivantes peuvent être définies à true ou false
+     */
+    'generations' => [
+        'controller' => true,
+        'repository' => true,
+        'transformer' => true,
+        'service' => true,
+        'request' => true,
+    ],
+
+    /**
+     * Templates personnalisés
+     *
+     * L'option suivante vous permet de définir des paths vers vos stubs personnalisés
+     */
+    'custom_stubs' => [
+        'repository' => 'resources/stubs/repository-pattern/repository.stub',
+        'service' => 'resources/stubs/repository-pattern/service.stub',
+        'controller' => 'resources/stubs/repository-pattern/controller.stub',
+        'transformer' => 'resources/stubs/repository-pattern/transformer.stub',
+        'request' => 'resources/stubs/repository-pattern/request.stub',
+    ],
+
+    /**
+     * Preffixes des classes
+     */
+    'preffixes' => [
+        'repository' => '',
+        'service' => '',
+        'controller' => '',
+        'transformer' => '',
+        'request' => [
+            'store' => 'Store',
+            'update' => 'Update'
+        ],
+    ],
+
+    /**
+     * Suffixes des classes
+     */
     'suffixes' => [
         'repository' => 'Repository',
         'service' => 'Service',
         'controller' => 'Controller',
         'transformer' => 'Transformer',
         'request' => 'Request',
-    ],
-
-    // Options du transformer
-    'transformer' => [
-        'include_timestamps' => true,
-        'date_format' => 'iso', // iso, human, timestamp
-        'include_relations' => false,
-    ],
-
-    // Support des nouveaux starter kits Laravel 12
-    'starter_kits' => [
-        'react' => [
-            'enabled' => false,
-            'with_workos' => false,
-        ],
-        'vue' => [
-            'enabled' => false,
-            'with_workos' => false,
-        ],
-        'livewire' => [
-            'enabled' => false,
-            'with_workos' => false,
-        ],
-    ],
-
-    // Options Carbon 3.x
-    'carbon' => [
-        'version' => '3.x',
-        'immutable' => true,
-        'locale' => 'fr',
     ],
 ];

@@ -123,7 +123,7 @@ class MakeModelWithPatternCommand extends Command
             'service' => Str::replace('//', '/', $config['paths']['service'] . '/' . $className . '.php') ?? app_path("Services/{$className}.php"),
             'controller' => Str::replace('//', '/', $config['paths']['controller'] . '/' . $className . '.php') ?? app_path("Http/Controllers/{$className}.php"),
             'transformer' => Str::replace('//', '/', $config['paths']['transformer'] . '/' . $className . '.php') ?? app_path("Transformers/{$className}.php"),
-            'request' => Str::replace('//', '/', $config['paths']['request'] . '/' . $className . '.php') ?? app_path("Http/Requests/{$name}/{$className}.php"),
+            'request' => Str::replace('//', '/', $config['paths']['request'] . '/' . $name . '/' . $className . '.php') ?? app_path("Http/Requests/{$name}/{$className}.php"),
         ];
 
         return $paths[$type];

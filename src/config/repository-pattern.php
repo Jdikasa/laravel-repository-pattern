@@ -14,6 +14,7 @@ return [
      * Namespaces personnalisés
      */
     'namespaces' => [
+        'repository' => 'App\\Models',
         'repository' => 'App\\Repositories',
         'service' => 'App\\Services',
         'transformer' => 'App\\Transformers',
@@ -27,6 +28,7 @@ return [
      * Ces repertoires doivent correspondre à vos namespaces personnalisés
      */
     'paths' => [
+        'model' => 'app/Models',
         'repository' => 'app/Repositories',
         'service' => 'app/Services',
         'transformer' => 'app/Transformers',
@@ -50,12 +52,36 @@ return [
         'request' => true,
     ],
 
+    'model_implementation' => [
+        // Si show == true
+        // Ceci ajoutera la declaration 'protected $table' avec comme valeur : preffixe + _ + nom du model au pluriel
+        'table' => [
+            'show' => true,
+            'preffixe' => "t"
+        ],
+        'usePrimaryKeySuffixe' => true,
+        // Si la valeur est true, Ceci ajoutera la declaration 'protected $primaryKey' avec comme valeur : id + _ + nom du model au singulier (si usePrimaryKeySuffixe == true)
+        'primaryKey' => true,
+        'keyType' => 'string',
+        'incrementing' => false,
+        'timestamps' => true,
+        'connection' => '',
+        'guard_name' => 'api',
+
+        'traites' => [
+            'Illuminate\\Database\\Eloquent\\Concerns\\HasUuids',
+            'Illuminate\\Database\\Eloquent\\Factories\\HasFactory',
+            'Illuminate\\Database\\Eloquent\\SoftDeletes',
+        ],
+    ],
+
     /**
      * Templates personnalisés
      *
      * L'option suivante vous permet de définir des paths vers vos stubs personnalisés
      */
     'custom_stubs' => [
+        'model' => 'resources/stubs/repository-pattern/model.stub',
         'repository' => 'resources/stubs/repository-pattern/repository.stub',
         'service' => 'resources/stubs/repository-pattern/service.stub',
         'controller' => 'resources/stubs/repository-pattern/controller.stub',
@@ -67,6 +93,7 @@ return [
      * Preffixes des classes
      */
     'preffixes' => [
+        'model' => '',
         'repository' => '',
         'service' => '',
         'controller' => '',
@@ -81,6 +108,7 @@ return [
      * Suffixes des classes
      */
     'suffixes' => [
+        'model' => '',
         'repository' => 'Repository',
         'service' => 'Service',
         'controller' => 'Controller',

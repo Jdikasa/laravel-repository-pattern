@@ -5,6 +5,7 @@ namespace Jdikasa\LaravelRepositoryPattern\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 
 class MakeModelWithPatternCommand extends Command
@@ -25,6 +26,7 @@ class MakeModelWithPatternCommand extends Command
         $config = config('repository-pattern', []);
         $name = $this->argument('name');
         $force = $this->option('force');
+        $result = [];
 
         $this->info("🚀 Génération du pattern Repository pour : {$name}");
 
@@ -44,37 +46,37 @@ class MakeModelWithPatternCommand extends Command
                 if(!$config['generations']['request']) return;
 
                 $prefix = $config['preffixes']['request']['store'] ?? 'Store';
-                $result = $this->generateComponent($name, $type, $prefix, $suffix, $force);
-                if ($result) {
+                $result[$type] = $this->generateComponent($name, $type, $prefix, $suffix, $force);
+                if (count($result[$type])) {
                     $this->info("✓ {$type} pour {$prefix} généré");
                 }
 
                 $prefix = $config['preffixes']['request']['update'] ?? 'Update';
-                $result = $this->generateComponent($name, $type, $prefix, $suffix, $force);
-                if ($result) {
+                $result[$type] = $this->generateComponent($name, $type, $prefix, $suffix, $force);
+                if (count($result[$type])) {
                     $this->info("✓ {$type} pour {$prefix} généré");
                 }
             } else {
                 if(!$config['generations'][$type]) return;
 
-                $result = $this->generateComponent($name, $type, '', $suffix, $force);
-                if ($result) {
+                $result[$type] = $this->generateComponent($name, $type, '', $suffix, $force);
+                if (count($result[$type])) {
                     $this->info("✓ {$type} généré");
                 }
             }
         }
 
-        $this->displaySummary($name);
+        $this->displaySummary($name, $result);
     }
 
     protected function generateComponent($name, $type, $prefix, $suffix, $force)
     {
         try {
-            if ($type === 'model') {
-                Artisan::call('make:model', ['name' => $name]);
-                $this->line("  ✓ {$name} model created");
-                return true;
-            }
+            // if ($type === 'model') {
+            //     Artisan::call('make:model', ['name' => $name]);
+            //     $this->line("  ✓ {$name} model created");
+            //     return true;
+            // }
 
             $className = "{$prefix}{$name}{$suffix}";
 
@@ -107,7 +109,8 @@ class MakeModelWithPatternCommand extends Command
             }
 
             $this->line("  ✓ {$className} created at {$path}");
-            return true;
+
+            return $path;
         } catch (\Exception $e) {
             $this->error("  ✗ Erreur lors de la génération de {$className}: {$e->getMessage()}");
             $this->error("  ✗ Stack trace: " . $e->getTraceAsString());
@@ -119,6 +122,7 @@ class MakeModelWithPatternCommand extends Command
     {
         $config = config('repository-pattern', []);
         $paths = [
+            'model' => Str::replace('//', '/', $config['paths']['model'] . '/' . $className . '.php') ?? app_path("Models/{$className}.php"),
             'repository' => Str::replace('//', '/', $config['paths']['repository'] . '/' . $className . '.php') ?? app_path("Repositories/{$className}.php"),
             'service' => Str::replace('//', '/', $config['paths']['service'] . '/' . $className . '.php') ?? app_path("Services/{$className}.php"),
             'controller' => Str::replace('//', '/', $config['paths']['controller'] . '/' . $className . '.php') ?? app_path("Http/Controllers/{$className}.php"),
@@ -161,6 +165,7 @@ class MakeModelWithPatternCommand extends Command
             '{{ModelName}}' => $name,
 
             // Namespaces
+            '{{ModelsNamespace}}' => Str::replace('/', '\\', $config['namespaces']['model'])  ?? 'App\\Models',
             '{{ControllersNamespace}}' => Str::replace('/', '\\', $config['namespaces']['controller'])  ?? 'App\\Http\\Controllers',
             '{{ServicesNamespace}}' => Str::replace('/', '\\', $config['namespaces']['service'])  ?? 'App\\Services',
             '{{TransformersNamespace}}' => Str::replace('/', '\\', $config['namespaces']['transformer'])  ?? 'App\\Transformers',
@@ -168,6 +173,7 @@ class MakeModelWithPatternCommand extends Command
             '{{RepositoriesNamespace}}' => Str::replace('/', '\\', $config['namespaces']['repository'])  ?? 'App\\Repositories',
 
             // Suffixes
+            '{{ModelSufix}}' => Str::ucfirst(Str::camel($config['suffixes']['model'] ?? '')),
             '{{ServiceSufix}}' => Str::ucfirst(Str::camel($config['suffixes']['service'] ?? 'Service')),
             '{{ControllerSufix}}' => Str::ucfirst(Str::camel($config['suffixes']['controller'] ?? 'Controller')),
             '{{TransformerSufix}}' => Str::ucfirst(Str::camel($config['suffixes']['transformer'] ?? 'Transformer')),
@@ -175,6 +181,7 @@ class MakeModelWithPatternCommand extends Command
             '{{RequestSufix}}' => Str::ucfirst(Str::camel($config['suffixes']['request'] ?? 'Request')),
 
             // Prefixes
+            '{{ModelPrefix}}' => Str::ucfirst(Str::camel($config['preffixes']['model'] ?? '')),
             '{{ServicePrefix}}' => Str::ucfirst(Str::camel($config['preffixes']['service'] ?? '')),
             '{{ControllerPrefix}}' => Str::ucfirst(Str::camel($config['preffixes']['controller'] ?? '')),
             '{{TransformerPrefix}}' => Str::ucfirst(Str::camel($config['preffixes']['tronsformer'] ?? '')),
@@ -190,9 +197,19 @@ class MakeModelWithPatternCommand extends Command
             '{{ModelNameKebab}}' => Str::kebab($name),
             '{{ModelNameSnake}}' => Str::snake($name),
 
-            // '{{RepositoryNamespace}}' => $config['repository_namespace'] ?? 'App\\Repositories',
-            // '{{ServiceNamespace}}' => $config['service_namespace'] ?? 'App\\Services',
-            // '{{TransformerNamespace}}' => $config['transformer_namespace'] ?? 'App\\Transformers',
+            // Traits
+            '{{traitImports}}' => implode(";\n", $config['model_implementation']['traites'] ?? []),
+            '{{traitUses}}' => implode(";\n        ", Arr::map($config['model_implementation']['traites'], function ($trait) {
+                return class_basename($trait);
+            })  ?? []),
+
+            '{{table}}' => $config['model_implementation']['table']['show'] ? 'protected $table = "'.Str::snake(($config['model_implementation']['table']['preffixe'] ?? '').Str::plural(Str::ucfirst($name))).'";\\n'  : '',
+            '{{primaryKey}}' => $config['model_implementation']['primaryKey'] ? 'protected $primaryKey = "'.Str::snake('id'.($config['model_implementation']['usePrimaryKeySuffixe'] ? Str::singular(Str::ucfirst($name)) : '')).'";\\n' : '',
+            '{{keyType}}' => $config['model_implementation']['keyType'] ? 'protected $keyType = "'.$config['model_implementation']['keyType'].'";\\n' : '',
+            '{{incrementing}}' => 'public $incrementing = '.$config['model_implementation']['incrementing'].';\\n',
+            '{{timestamps}}' => 'public $timestamps = '.$config['model_implementation']['timestamps'].';\\n',
+            '{{connection}}' => $config['model_implementation']['connection'] ? 'protected $connection = "'.$config['model_implementation']['connection'].'";\\n' : '',
+            '{{guard_name}}' => $config['model_implementation']['guard_name'] ? 'protected $guard_name = "'.$config['model_implementation']['guard_name'].'";\\n' : '',
         ];
 
         return str_replace(array_keys($replacements), array_values($replacements), $stub);
@@ -205,20 +222,20 @@ class MakeModelWithPatternCommand extends Command
         }
     }
 
-    protected function displaySummary($name)
+    protected function displaySummary($name, $paths)
     {
         $this->newLine();
         $this->info("📋 Résumé de la génération :");
         $this->table(
             ['Composant', 'Fichier', 'Emplacement'],
             [
-                ['Model', "{$name}.php", 'app/Models/'],
-                ['Repository', "{$name}Repository.php", 'app/Repositories/'],
-                ['Service', "{$name}Service.php", 'app/Services/'],
-                ['Controller', "{$name}Controller.php", 'app/Http/Controllers/'],
-                ['Transformer', "{$name}Transformer.php", 'app/Transformers/'],
-                ['Request', "Store{$name}Request.php", 'app/Http/Requests/{$name}/'],
-                ['Request', "Update{$name}Request.php", 'app/Http/Requests/{$name}/'],
+                ['Model', "{$name}.php", $paths['model']],
+                ['Repository', "{$name}Repository.php", $paths['repository']],
+                ['Service', "{$name}Service.php", $paths['service']],
+                ['Controller', "{$name}Controller.php", $paths['controller']],
+                ['Transformer', "{$name}Transformer.php", $paths['transformer']],
+                ['Request', "Store{$name}Request.php", $paths['request']],
+                ['Request', "Update{$name}Request.php", $paths['request']],
             ]
         );
 

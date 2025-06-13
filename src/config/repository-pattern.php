@@ -14,7 +14,7 @@ return [
      * Namespaces personnalisés
      */
     'namespaces' => [
-        'repository' => 'App\\Models',
+        'model' => 'App\\Models',
         'repository' => 'App\\Repositories',
         'service' => 'App\\Services',
         'transformer' => 'App\\Transformers',

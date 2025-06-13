@@ -31,12 +31,12 @@ class MakeModelWithPatternCommand extends Command
         $this->info("🚀 Génération du pattern Repository pour : {$name}");
 
         $components = [
-            'model' => 'Model',
-            'repository' => 'Repository',
-            'service' => 'Service',
-            'controller' => 'Controller',
-            'transformer' => 'Transformer',
-            'request' => 'Request',
+            'model' => $config['suffixes']['model'] ?? '',
+            'repository' => $config['suffixes']['repository'] ?? 'Repository',
+            'service' => $config['suffixes']['service'] ?? 'Service',
+            'controller' => $config['suffixes']['controller'] ?? 'Controller',
+            'transformer' => $config['suffixes']['transformer'] ?? 'Transformer',
+            'request' => $config['suffixes']['request'] ?? 'Request',
         ];
 
         foreach ($components as $type => $suffix) {

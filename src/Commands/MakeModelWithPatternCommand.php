@@ -198,18 +198,22 @@ class MakeModelWithPatternCommand extends Command
             '{{ModelNameSnake}}' => Str::snake($name),
 
             // Traits
-            '{{traitImports}}' => implode(";\n", $config['model_implementation']['traites'] ?? []),
-            '{{traitUses}}' => implode(";\n        ", Arr::map($config['model_implementation']['traites'], function ($trait) {
-                return class_basename($trait);
+            '{{traitImports}}' => implode(";\n", Arr::map($config['model_implementation']['traites'], function ($trait) {
+                if (class_basename($trait) == 'HasFactory') return '';
+                return 'use '.$trait.';';
+            }) ?? []),
+            '{{traitUses}}' => implode("\n        ", Arr::map($config['model_implementation']['traites'], function ($trait) {
+                if (class_basename($trait) == 'HasFactory') return '';
+                return 'use '.class_basename($trait).';';
             })  ?? []),
 
-            '{{table}}' => $config['model_implementation']['table']['show'] ? 'protected $table = "'.Str::snake(($config['model_implementation']['table']['preffixe'] ?? '').Str::plural(Str::ucfirst($name))).'";\\n'  : '',
-            '{{primaryKey}}' => $config['model_implementation']['primaryKey'] ? 'protected $primaryKey = "'.Str::snake('id'.($config['model_implementation']['usePrimaryKeySuffixe'] ? Str::singular(Str::ucfirst($name)) : '')).'";\\n' : '',
-            '{{keyType}}' => $config['model_implementation']['keyType'] ? 'protected $keyType = "'.$config['model_implementation']['keyType'].'";\\n' : '',
-            '{{incrementing}}' => 'public $incrementing = '.$config['model_implementation']['incrementing'].';\\n',
-            '{{timestamps}}' => 'public $timestamps = '.$config['model_implementation']['timestamps'].';\\n',
-            '{{connection}}' => $config['model_implementation']['connection'] ? 'protected $connection = "'.$config['model_implementation']['connection'].'";\\n' : '',
-            '{{guard_name}}' => $config['model_implementation']['guard_name'] ? 'protected $guard_name = "'.$config['model_implementation']['guard_name'].'";\\n' : '',
+            '{{table}}' => $config['model_implementation']['table']['show'] ? 'protected $table = "'.Str::snake(($config['model_implementation']['table']['preffixe'] ?? '').Str::plural(Str::ucfirst($name))).'";'  : '',
+            '{{primaryKey}}' => $config['model_implementation']['primaryKey'] ? 'protected $primaryKey = "'.Str::snake('id'.($config['model_implementation']['usePrimaryKeySuffixe'] ? Str::singular(Str::ucfirst($name)) : '')).'";' : '',
+            '{{keyType}}' => $config['model_implementation']['keyType'] ? 'protected $keyType = "'.$config['model_implementation']['keyType'].'";' : '',
+            '{{incrementing}}' => 'public $incrementing = '.$config['model_implementation']['incrementing'] ? 'true' : 'false'.';',
+            '{{timestamps}}' => 'public $timestamps = '.$config['model_implementation']['timestamps'] ? 'true' : 'false'.';',
+            '{{connection}}' => $config['model_implementation']['connection'] ? 'protected $connection = "'.$config['model_implementation']['connection'].'";' : '',
+            '{{guard_name}}' => $config['model_implementation']['guard_name'] ? 'protected $guard_name = "'.$config['model_implementation']['guard_name'].'";' : '',
         ];
 
         return str_replace(array_keys($replacements), array_values($replacements), $stub);

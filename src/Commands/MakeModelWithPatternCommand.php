@@ -206,12 +206,10 @@ class MakeModelWithPatternCommand extends Command
             }) ?? []),
 
             // uses
-            '{{traitUses}}' => implode("\n", Arr::reject(Arr::map($config['model_implementation']['traites'], function ($trait) {
-                if (class_basename($trait) == 'HasFactory') return '';
+            '{{traitUses}}' => implode("\n", Arr::forget(Arr::map($config['model_implementation']['traites'], function ($trait) {
+                if (class_basename($trait) == 'HasFactory') return 'HasFactory';
                 return 'use ' . class_basename($trait) . ';';
-            }), function ($trait) {
-                return $trait == '';
-            }) ?? []),
+            }), 'HasFactory') ?? []),
 
             '{{table}}' => $config['model_implementation']['table']['show'] ? 'protected $table = "' . Str::snake(($config['model_implementation']['table']['preffixe'] ?? '') . Str::plural(Str::ucfirst($name))) . '";'  : '',
             '{{primaryKey}}' => $config['model_implementation']['primaryKey'] ? 'protected $primaryKey = "' . Str::snake('id' . ($config['model_implementation']['usePrimaryKeySuffixe'] ? Str::singular(Str::ucfirst($name)) : '')) . '";' : '',

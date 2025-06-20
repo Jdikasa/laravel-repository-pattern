@@ -198,12 +198,10 @@ class MakeModelWithPatternCommand extends Command
             '{{ModelNameSnake}}' => Str::snake($name),
 
             // Traits
-            '{{traitImports}}' => implode("\n", Arr::reject(Arr::map($config['model_implementation']['traites'], function ($trait) {
-                if (class_basename($trait) == 'HasFactory') return '';
+            '{{traitImports}}' => implode("\n", Arr::forget(Arr::map($config['model_implementation']['traites'], function ($trait) {
+                if (class_basename($trait) == 'HasFactory') return 'HasFactory';
                 return 'use ' . $trait . ';';
-            }), function ($trait) {
-                return $trait == '';
-            }) ?? []),
+            }), 'HasFactory') ?? []),
 
             // uses
             '{{traitUses}}' => implode("\n", Arr::forget(Arr::map($config['model_implementation']['traites'], function ($trait) {

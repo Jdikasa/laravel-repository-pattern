@@ -160,6 +160,16 @@ class MakeModelWithPatternCommand extends Command
     {
         $config = config('repository-pattern', []);
 
+        $mappedTraits = Arr::map($config['model_implementation']['traites'], function ($trait) {
+            if (class_basename($trait) === 'HasFactory') return 'HasFactory';
+            return 'use ' . $trait . ';';
+        });
+
+        $mappedUseTraits = Arr::map($config['model_implementation']['traites'], function ($trait) {
+            if (class_basename($trait) === 'HasFactory') return 'HasFactory';
+            return 'use ' . class_basename($trait) . ';';
+        });
+
         $replacements = [
             // Model
             '{{ModelName}}' => $name,
@@ -198,16 +208,10 @@ class MakeModelWithPatternCommand extends Command
             '{{ModelNameSnake}}' => Str::snake($name),
 
             // Traits
-            '{{traitImports}}' => implode("\n", Arr::forget(Arr::map($config['model_implementation']['traites'], function ($trait) {
-                if (class_basename($trait) == 'HasFactory') return 'HasFactory';
-                return 'use ' . $trait . ';';
-            }), 'HasFactory') ?? []),
+            '{{traitImports}}' => implode("\n", Arr::forget($mappedTraits, 'HasFactory') ?? []),
 
             // uses
-            '{{traitUses}}' => implode("\n", Arr::forget(Arr::map($config['model_implementation']['traites'], function ($trait) {
-                if (class_basename($trait) == 'HasFactory') return 'HasFactory';
-                return 'use ' . class_basename($trait) . ';';
-            }), 'HasFactory') ?? []),
+            '{{traitUses}}' => implode("\n", Arr::forget($mappedUseTraits, 'HasFactory') ?? []),
 
             '{{table}}' => $config['model_implementation']['table']['show'] ? 'protected $table = "' . Str::snake(($config['model_implementation']['table']['preffixe'] ?? '') . Str::plural(Str::ucfirst($name))) . '";'  : '',
             '{{primaryKey}}' => $config['model_implementation']['primaryKey'] ? 'protected $primaryKey = "' . Str::snake('id' . ($config['model_implementation']['usePrimaryKeySuffixe'] ? Str::singular(Str::ucfirst($name)) : '')) . '";' : '',

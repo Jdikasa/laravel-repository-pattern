@@ -213,7 +213,7 @@ class MakeModelWithPatternCommand extends Command
             '{{traitImports}}' => implode("\n", array_values($mappedTraits) ?? []),
 
             // uses
-            '{{traitUses}}' => implode("\n  ", array_values($mappedUseTraits) ?? []),
+            '{{traitUses}}' => implode("\n      ", array_values($mappedUseTraits) ?? []),
 
             '{{table}}' => $config['model_implementation']['table']['show'] ? 'protected $table = "' . Str::snake(($config['model_implementation']['table']['preffixe'] ?? '') . Str::plural(Str::ucfirst($name))) . '";'  : '',
             '{{primaryKey}}' => $config['model_implementation']['primaryKey'] ? 'protected $primaryKey = "' . Str::snake('id' . ($config['model_implementation']['usePrimaryKeySuffixe'] ? Str::singular(Str::ucfirst($name)) : '')) . '";' : '',

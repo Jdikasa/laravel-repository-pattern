@@ -11,7 +11,7 @@ class RepositoryPatternServiceProvider extends ServiceProvider
     {
         // Publier les stubs personnalisables
         $this->publishes([
-            __DIR__.'/Stubs' => resource_path('stubs/repository-pattern'),
+            __DIR__.'/Stubs' => resource_path('Stubs/repository-pattern'),
         ], 'repository-pattern-stubs');
 
         // Publier la configuration

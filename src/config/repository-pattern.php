@@ -81,12 +81,12 @@ return [
      * L'option suivante vous permet de définir des paths vers vos stubs personnalisés
      */
     'custom_stubs' => [
-        'model' => 'resources/stubs/repository-pattern/model.stub',
-        'repository' => 'resources/stubs/repository-pattern/repository.stub',
-        'service' => 'resources/stubs/repository-pattern/service.stub',
-        'controller' => 'resources/stubs/repository-pattern/controller.stub',
-        'transformer' => 'resources/stubs/repository-pattern/transformer.stub',
-        'request' => 'resources/stubs/repository-pattern/request.stub',
+        'model' => 'resources/Stubs/repository-pattern/model.stub',
+        'repository' => 'resources/Stubs/repository-pattern/repository.stub',
+        'service' => 'resources/Stubs/repository-pattern/service.stub',
+        'controller' => 'resources/Stubs/repository-pattern/controller.stub',
+        'transformer' => 'resources/Stubs/repository-pattern/transformer.stub',
+        'request' => 'resources/Stubs/repository-pattern/request.stub',
     ],
 
     /**

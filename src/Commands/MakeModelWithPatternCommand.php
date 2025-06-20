@@ -137,7 +137,7 @@ class MakeModelWithPatternCommand extends Command
     {
         $config = config('repository-pattern', []);
         // Chercher d'abord dans les stubs publiés
-        $customStubPath = $config['custom_stubs'][$type] ?? resource_path("stubs/repository-pattern/{$type}.stub");
+        $customStubPath = $config['custom_stubs'][$type] ?? resource_path("Stubs/repository-pattern/{$type}.stub");
         if ($this->files->exists($customStubPath)) {
             $this->info("Debug: Utilisation du stub personnalisé : {$customStubPath}");
             return $this->files->get($customStubPath);

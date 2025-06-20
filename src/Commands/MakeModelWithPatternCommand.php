@@ -160,15 +160,17 @@ class MakeModelWithPatternCommand extends Command
     {
         $config = config('repository-pattern', []);
 
-        $mappedTraits = Arr::map($config['model_implementation']['traites'], function ($trait) {
-            if (class_basename($trait) === 'HasFactory') return 'HasFactory';
-            return 'use ' . $trait . ';';
-        });
+        $mappedTraits = array_filter(Arr::map($config['model_implementation']['traites'], function ($trait) {
+            return class_basename($trait) === 'HasFactory'
+                ? null
+                : 'use ' . $trait . ';';
+        }));;
 
-        $mappedUseTraits = Arr::map($config['model_implementation']['traites'], function ($trait) {
-            if (class_basename($trait) === 'HasFactory') return 'HasFactory';
-            return 'use ' . class_basename($trait) . ';';
-        });
+        $mappedUseTraits = array_filter(Arr::map($config['model_implementation']['traites'], function ($trait) {
+            return class_basename($trait) === 'HasFactory'
+                ? null
+                : 'use ' . class_basename($trait) . ';';
+        }));;
 
         $replacements = [
             // Model
@@ -208,10 +210,10 @@ class MakeModelWithPatternCommand extends Command
             '{{ModelNameSnake}}' => Str::snake($name),
 
             // Traits
-            '{{traitImports}}' => implode("\n", Arr::forget($mappedTraits, 'HasFactory') ?? []),
+            '{{traitImports}}' => implode("\n", array_values($mappedTraits) ?? []),
 
             // uses
-            '{{traitUses}}' => implode("\n", Arr::forget($mappedUseTraits, 'HasFactory') ?? []),
+            '{{traitUses}}' => implode("\n", array_values($mappedUseTraits) ?? []),
 
             '{{table}}' => $config['model_implementation']['table']['show'] ? 'protected $table = "' . Str::snake(($config['model_implementation']['table']['preffixe'] ?? '') . Str::plural(Str::ucfirst($name))) . '";'  : '',
             '{{primaryKey}}' => $config['model_implementation']['primaryKey'] ? 'protected $primaryKey = "' . Str::snake('id' . ($config['model_implementation']['usePrimaryKeySuffixe'] ? Str::singular(Str::ucfirst($name)) : '')) . '";' : '',
